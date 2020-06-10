@@ -17,12 +17,17 @@ In terms of the MUST HAVE FEATURES, I can think of three. Feel free to add more
 - Profiles: This is an extension of the previous point, but I want there to be different profiles. The mouse radian idea for example: if you have 50+ programs, than you'll have to comprise with laziness over efficiently.
 - Plantext Config: I like editing Config *outside* some interface, since I can make it more portable.
 
-In terms of how we are going to do, I think `python` is the best. I want to make this cross platform, and `python` is one way to do that. not only that, but there's so many modules, there's bound to be something I like. If you can think of a way to do this outside of `python`, which is better, feel free. 
+In terms of the porgramming langauge, C with xlib seems the best. 
+
+# Must have
+Window-agnostic rendering; we want to be able to extend and utilize several graphical components, often agnostic of any windows presently open.
+System-level scancode reading; we want to be able to read the user's keyboard--not just the keys they press, but the positions on the keyboard (as in sxhkd)--regardless of what windows happen to be open. On most POSIX systems, this is facile; it may require additional effort on Windows.
+Extensibility; this should be a program upon which abstractions may be made, whether as a matter of configuration or additional software. Part and parcel of this is keeping file length curt and source code readable so that non-predictable, detailed configurations can be made quickly and easily (suckless do this and it works quite well!)
 
 # Time-line
 The mouse gestures project seems easy enough, so I'm doing that last. I will work on the Program Menu. If you're reading this, than a doc of what to implement at this stage should be done in a week or two's time. God speed.
 
 
 # Awesome
-One thing though [testman](https://github.com/testman42) said over in [Reddit thread](https://www.reddit.com/r/accursedfarms/comments/h0cumc/the_gui_should_be_better_a_lot_better_new_video/ftm0dqa?utm_source=share&utm_medium=web2x), was I should make it an [awesome](https://github.com/sindresorhus/awesome#readme) document. So right now, this is going to be an awesome document.
+One thing though [testman](https://github.com/testman42) said over in [Reddit thread](https://www.reddit.com/r/accursedfarms/comments/h0cumc/the_gui_should_be_better_a_lot_better_new_video/ftm0dqa?utm_source=share&utm_medium=web2x), was I should make it an [awesome](https://github.com/sindresorhus/awesome#readme) document. 
 
