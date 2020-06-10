@@ -31,3 +31,5 @@ The mouse gestures project seems easy enough, so I'm doing that last. I will wor
 # Awesome
 One thing though [testman](https://github.com/testman42) said over in [Reddit thread](https://www.reddit.com/r/accursedfarms/comments/h0cumc/the_gui_should_be_better_a_lot_better_new_video/ftm0dqa?utm_source=share&utm_medium=web2x), was I should make it an [awesome](https://github.com/sindresorhus/awesome#readme) document. 
 
+# Contribute
+We are still in planning stages. Contributions, discussions and research are welcome. Just join our [chat on Matrix/Riot](https://riot.im/app/#/room/#gui:matrix.org) or make a pull request/issue for this repository.
