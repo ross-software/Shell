@@ -1,4 +1,4 @@
-# Awesome GUI
+# Ross Scott and the quest for the holy GUI 
 To quote Ross from Accursed Farms, "None of this would be possible without multiple mathematicians and scientists, working around the clock to break reality"
 
 The main goal of this project is to create the perfect GUI. So far, I want to create 3 programs that I think are important:
