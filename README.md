@@ -24,5 +24,5 @@ The mouse gestures project seems easy enough, so I'm doing that last. I will wor
 
 
 # Awesome
-one thing though Mr.Tetus_maximus said over at https://www.reddit.com/r/accursedfarms/comments/h0cumc/the_gui_should_be_better_a_lot_better_new_video/ftm0dqa?utm_source=share&utm_medium=web2x, was I should make it an awesome document. So right now, this is going to be an awesome document.
+One thing though [testman](https://github.com/testman42) said over in [Reddit thread](https://www.reddit.com/r/accursedfarms/comments/h0cumc/the_gui_should_be_better_a_lot_better_new_video/ftm0dqa?utm_source=share&utm_medium=web2x), was I should make it an [awesome](https://github.com/sindresorhus/awesome#readme) document. So right now, this is going to be an awesome document.
 
