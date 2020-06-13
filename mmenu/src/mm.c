@@ -41,6 +41,10 @@ main(int argc, char *argv[]) {
 
     Atom delwin = XInternAtom(dpy, "WM_DELETE_WINDOW", 0);
     XSetWMProtocols(dpy, win, &delwin, 1);
+	XTextProperty wnname={"mmenu", delwin, 8, 5};
+	XSetWMName(dpy, win, &wnname);
+	XClassHint wnclass={"mmenu", "mmenu"};
+	XSetClassHint(dpy, win, &wnclass);
 
     XSelectInput(dpy, win, ExposureMask | KeyPressMask);
     XMapWindow(dpy, win);
