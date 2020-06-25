@@ -1,3 +1,10 @@
+
+
+> "Man must shape his tools lest they shape him."
+> -- <cite>[Arthur Miller][1]</cite>
+
+[1]: https://www.azquotes.com/quote/654449
+
 # Ross Scott and the quest for the holy GUI 
 To quote Ross from Accursed Farms, "None of this would be possible without multiple mathematicians and scientists, working around the clock to break reality"
 
@@ -33,3 +40,4 @@ One thing though [testman](https://github.com/testman42) said over in [Reddit th
 
 # Contribute
 We are still in planning stages. Contributions, discussions and research are welcome. Just join our [chat on Matrix/Riot](https://riot.im/app/#/room/#gui:matrix.org) or make a pull request/issue for this repository.
+
