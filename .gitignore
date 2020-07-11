@@ -1,2 +1,3 @@
 mmenu/bin/*
 mmenu/**/*.o
+doc/*
