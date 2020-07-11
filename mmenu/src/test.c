@@ -1,6 +1,7 @@
 #include "wheel.h"
 #define max_wheel 50
 
+// Test wheel if somebody messed up in linking the tree, and have an infinite location
 int test1_infintewheel(){
   wheel test; create_wheel(&test, "test");
   setcmd_wheel(&test, "notify-send '0 index'", 0);
@@ -33,6 +34,7 @@ int test1_infintewheel(){
   return 0;
 }
 
+// Test for regular operations
 int test2_reg(){
   wheel test1; create_wheel(&test1, "test1");
   wheel test2; create_wheel(&test2, "test2");
@@ -62,6 +64,7 @@ int test2_reg(){
 
 }
 
+// Driver for test functions
 int main(){
   test2_reg();
   test1_infintewheel();
