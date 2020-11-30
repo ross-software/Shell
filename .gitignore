@@ -1,4 +1,4 @@
 mmenu/bin/*
 mmenu/**/*.o
 doc/*
-CMakeLists.txt.user*
+ApplicationLauncher/CMakeLists.txt.user*
