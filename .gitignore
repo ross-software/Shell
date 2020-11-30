@@ -1,3 +1,4 @@
 mmenu/bin/*
 mmenu/**/*.o
 doc/*
+CMakeLists.txt.user*
