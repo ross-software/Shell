@@ -1,4 +1,3 @@
-mmenu/bin/*
-mmenu/**/*.o
 doc/*
 ApplicationLauncher/CMakeLists.txt.user*
+ApplicationLauncher/build/

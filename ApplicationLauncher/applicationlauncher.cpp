@@ -11,7 +11,7 @@
 
 ApplicationLauncher::ApplicationLauncher(QWidget *parent)
     : QWidget(parent)
-    , escapeLabel(new QLabel(tr("[Esc] Back/Exit")))
+    , escapeLabel(new QLabel(tr("[Esc] Back/Close")))
     , gridLayout(new QGridLayout)
     , nextPageLabel(new QLabel(tr("[Space] Next Page")))
     , verticalLayout(new QVBoxLayout(this))

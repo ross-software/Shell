@@ -43,3 +43,5 @@ add_executable(ApplicationLauncher
 )
 
 target_link_libraries(ApplicationLauncher PRIVATE Qt5::Widgets Qt5::DBus Qt5Xdg Qt5X11Extras X11)
+
+install(TARGETS ApplicationLauncher RUNTIME DESTINATION bin)
