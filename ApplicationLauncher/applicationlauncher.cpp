@@ -9,11 +9,13 @@
 #endif
 #include <cmath>
 
+
 ApplicationLauncher::ApplicationLauncher(QWidget *parent)
     : QWidget(parent)
     , escapeLabel(new QLabel(tr("[Esc] Back/Close")))
     , gridLayout(new QGridLayout)
-    , nextPageLabel(new QLabel(tr("[Space] Next Page")))
+    , nextPageLabel(new QLabel(tr("[Tab] Switch Page")))
+    , settings(new QSettings)
     , verticalLayout(new QVBoxLayout(this))
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -24,13 +26,21 @@ ApplicationLauncher::ApplicationLauncher(QWidget *parent)
     verticalLayout->addStretch();
     verticalLayout->addWidget(nextPageLabel);
     nextPageLabel->setAlignment(Qt::AlignHCenter);
-    initializeMenu();
-    showApplications();
 }
 
 void ApplicationLauncher::toggle()
 {
-    setVisible(!isVisible());
+    if (!isVisible()) {
+        while (path.size() > 1) {
+            path.removeLast();
+        }
+        currentPage = 0;
+        initializeMenu();
+        showApplications();
+        show();
+    } else {
+        hide();
+    }
 }
 
 void ApplicationLauncher::clearGridLayout()
@@ -43,10 +53,16 @@ void ApplicationLauncher::clearGridLayout()
 
 void ApplicationLauncher::initializeMenu()
 {
+    settings.sync();
+    settings.beginGroup("Layout");
+    maxColumns = settings.value("MaxColumns", 4).toInt();
+    maxRows = settings.value("MaxRows", 2).toInt();
+    settings.endGroup();
     menu.setEnvironments(QStringList() << qgetenv("XDG_CURRENT_DESKTOP"));
     if (!menu.read(XdgMenu::getMenuFileName())) {
         return;
     }
+    launcherItems.clear();
     loadLauncherItems("Menu");
     loadLauncherItems("AppLink");
     QHashIterator<QString, QVarLengthArray<LauncherItem *>> it(launcherItems);
@@ -83,6 +99,8 @@ void ApplicationLauncher::showApplications()
     int maxPages = std::ceil(launcherItems[path.last()].size() / (double)(maxRows * maxColumns));
     if (currentPage >= maxPages) {
         currentPage = 0;
+    } else if (currentPage < 0) {
+        currentPage = maxPages - 1;
     }
     nextPageLabel->setVisible(maxPages > 1);
     for (int row = 0; row < maxRows; row++) {
@@ -98,8 +116,6 @@ void ApplicationLauncher::showApplications()
                 }
 #endif
                 gridLayout->addWidget(launcherItems[path.last()].at(i), row, column);
-            } else {
-                return;
             }
         }
     }
@@ -109,15 +125,6 @@ void ApplicationLauncher::closeEvent(QCloseEvent *event)
 {
     event->ignore();
     hide();
-}
-
-void ApplicationLauncher::hideEvent(QHideEvent *)
-{
-    while (path.size() > 1) {
-        path.removeLast();
-    }
-    currentPage = 0;
-    showApplications();
 }
 
 void ApplicationLauncher::keyPressEvent(QKeyEvent *event)
@@ -141,13 +148,17 @@ void ApplicationLauncher::keyPressEvent(QKeyEvent *event)
             }
         }
     }
-    if (event->key() == Qt::Key_Space) {
+    if (event->key() == Qt::Key_Tab) {
         currentPage++;
+        showApplications();
+    } else if (event->key() == Qt::Key_Backtab) {
+        currentPage--;
         showApplications();
     }
     if (event->key() == Qt::Key_Escape) {
         if (path.size() > 1) {
             path.removeLast();
+            currentPage = 0;
         } else {
             hide();
         }

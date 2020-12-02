@@ -4,14 +4,14 @@
 <context>
     <name>ApplicationLauncher</name>
     <message>
-        <location filename="../applicationlauncher.cpp" line="14"/>
+        <location filename="../applicationlauncher.cpp" line="15"/>
         <source>[Esc] Back/Close</source>
         <translation>[Esc] Zurück/Schließen</translation>
     </message>
     <message>
-        <location filename="../applicationlauncher.cpp" line="16"/>
-        <source>[Space] Next Page</source>
-        <translation>[Leertaste] Nächste Seite</translation>
+        <location filename="../applicationlauncher.cpp" line="17"/>
+        <source>[Tab] Switch Page</source>
+        <translation>[Tab] Seite Wechseln</translation>
     </message>
 </context>
 </TS>

@@ -4,6 +4,7 @@
 #include "launcheritem.h"
 
 #include <QGridLayout>
+#include <QSettings>
 #include <qt5xdg/XdgMenu>
 
 class ApplicationLauncher : public QWidget
@@ -22,11 +23,12 @@ private:
     QLabel *escapeLabel;
     QGridLayout *gridLayout;
     QHash<QString, QVarLengthArray<LauncherItem *>> launcherItems;
-    const int maxColumns = 4;
-    QLabel *nextPageLabel;
-    const int maxRows = 2;
+    int maxColumns;
+    int maxRows;
     XdgMenu menu;
+    QLabel *nextPageLabel;
     QStringList path = {"Applications"};
+    QSettings settings;
     QVBoxLayout *verticalLayout;
 
     void clearGridLayout();
@@ -35,7 +37,6 @@ private:
     void showApplications();
 
     void closeEvent(QCloseEvent *event);
-    void hideEvent(QHideEvent *);
     void keyPressEvent(QKeyEvent *event);
 
 };

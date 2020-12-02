@@ -9,6 +9,8 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    app.setOrganizationName("ROSS");
+    app.setApplicationName("ApplicationLauncher");
     QTranslator translator;
     translator.load(QLocale::system().name());
     app.installTranslator(&translator);
