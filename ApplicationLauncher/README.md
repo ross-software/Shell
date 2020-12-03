@@ -1,5 +1,7 @@
 # ApplicationLauncher
 
+![Screenshot](Screenshot.png)
+
 ## Dependencies
 
 - Qt5 [Widgets, DBus, LinguistTools, X11Extras (optional)]
