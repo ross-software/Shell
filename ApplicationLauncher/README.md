@@ -1,3 +1,5 @@
+# ApplicationLauncher
+
 ## Dependencies
 
 - Qt5 [Widgets, DBus, LinguistTools, X11Extras (optional)]
