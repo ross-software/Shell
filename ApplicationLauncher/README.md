@@ -1,3 +1,9 @@
+## Dependencies
+
+- Qt5 [Widgets, DBus, LinguistTools, X11Extras (optional)]
+- libqtxdg
+- libx11 (optional)
+
 ## Compilation
 
 ```bash
@@ -14,5 +20,5 @@ With the recommended window manager configurations the keyboard shortcut for tog
 
 You can toggle the application launcher manually with dbus with the following command:
 ```bash
-qdbus org.ROSS.ApplicationLauncher /App toggle
+dbus-send --dest=org.ROSS.ApplicationLauncher --type=method_call /App org.ROSS.ApplicationLauncher.toggle
 ```

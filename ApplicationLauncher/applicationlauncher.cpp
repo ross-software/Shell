@@ -9,7 +9,6 @@
 #endif
 #include <cmath>
 
-
 ApplicationLauncher::ApplicationLauncher(QWidget *parent)
     : QWidget(parent)
     , escapeLabel(new QLabel(tr("[Esc] Back/Close")))
