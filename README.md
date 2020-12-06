@@ -23,4 +23,4 @@ Some more must-have features:
 For the programming language and framework, we use Qt with C++ and some small libraries like libqtxdg. 
 
 # Contribute
-We are still in planning stages. Contributions, discussions and research are welcome. Just join our [chat on Matrix/Riot](https://riot.im/app/#/room/#gui:matrix.org) or make a pull request/issue for this repository.
+We are still in planning stages. Contributions, discussions and research are welcome. Just join our [chat on Element.io](https://app.element.io/#/room/#ross:matrix.org) or make a pull request/issue for this repository.
