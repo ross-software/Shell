@@ -2,6 +2,10 @@
 
 ![Screenshot](Screenshot.png)
 
+## Installation (pre-built packages)
+### Arch Linux
+There is an official git package available in the AUR: [ross-applicationlauncher-git](https://aur.archlinux.org/packages/ross-applicationlauncher-git/)
+
 ## Dependencies
 
 - Qt5 [Widgets, DBus, LinguistTools, X11Extras (optional)]
