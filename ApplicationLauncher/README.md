@@ -2,7 +2,7 @@
 
 ![Screenshot](Screenshot.png)
 
-## Installation (pre-built packages)
+## Installation
 ### Arch Linux
 There is an official git package available in the AUR: [ross-applicationlauncher-git](https://aur.archlinux.org/packages/ross-applicationlauncher-git/)
 
