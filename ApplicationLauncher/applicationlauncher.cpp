@@ -3,10 +3,8 @@
 #include <QIcon>
 #include <QKeyEvent>
 #include <QKeySequence>
-#if HAVE_X11
 #include <QtX11Extras/QX11Info>
 #include <X11/XKBlib.h>
-#endif
 #include <cmath>
 
 ApplicationLauncher::ApplicationLauncher(QWidget *parent)
@@ -106,14 +104,12 @@ void ApplicationLauncher::showApplications()
         for (int column = 0; column < maxColumns; column++) {
             int i = currentPage * maxRows * maxColumns + row * maxColumns + column;
             if (i < launcherItems[path.last()].size()) {
-#if HAVE_X11
                 if (QX11Info::isPlatformX11()) {
                     QString keyPrefix = "[" + QKeySequence(XkbKeycodeToKeysym(QX11Info::display(), 24 + 14 * row + column, 0, 0)).toString() + "] ";
                     if (!launcherItems[path.last()].at(i)->getTitle().startsWith(keyPrefix)) {
                         launcherItems[path.last()].at(i)->setTitle(keyPrefix + launcherItems[path.last()].at(i)->getTitle());
                     }
                 }
-#endif
                 gridLayout->addWidget(launcherItems[path.last()].at(i), row, column);
             }
         }

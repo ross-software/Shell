@@ -11,14 +11,9 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(HAVE_X11 ON)
-
 find_package(Qt5 COMPONENTS Widgets DBus LinguistTools REQUIRED)
-if(HAVE_X11)
-    find_package(Qt5X11Extras)
-    find_package(X11)
-    add_definitions(-DHAVE_X11)
-endif()
+find_package(Qt5X11Extras)
+find_package(X11)
 find_package(Qt5Xdg)
 
 set(PROJECT_SOURCES
@@ -44,9 +39,6 @@ add_executable(ApplicationLauncher
     ${QM_FILES}
 )
 
-target_link_libraries(ApplicationLauncher PRIVATE Qt5::Widgets Qt5::DBus Qt5Xdg)
-if (HAVE_X11)
-    target_link_libraries(ApplicationLauncher PRIVATE Qt5X11Extras X11)
-endif()
+target_link_libraries(ApplicationLauncher PRIVATE Qt5::Widgets Qt5::DBus Qt5X11Extras Qt5Xdg X11)
 
 install(TARGETS ApplicationLauncher RUNTIME DESTINATION bin)
