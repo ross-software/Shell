@@ -24,7 +24,7 @@ sudo make install
 
 ## Usage
 
-With the recommended window manager configurations the keyboard shortcut for toggling the ApplicationLauncher is <kbd>Super</kbd> + <kbd>Space</kbd>.
+With the recommended window manager configurations the keyboard shortcut for toggling the ApplicationLauncher is <kbd>Super</kbd> + <kbd>Q</kbd>.
 
 You can toggle the application launcher manually with dbus with the following command:
 ```bash
