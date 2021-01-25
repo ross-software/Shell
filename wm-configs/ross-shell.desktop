@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=ROSS Shell
+Comment=GUI designed for maximum efficiency and ease of use
+TryExec=awesome
+Exec=awesome -c /etc/xdg/awesome/ross/rc.lua
+Type=Application
