@@ -5,7 +5,7 @@ The main goal of this project is to create the most effcient GUI possible. You c
 - wm-configs: session and configurations files
 
 ## Installation and Usage
-Follow the instructions in the folders mentioned above.
+Follow the instructions in the wiki.
 
 ## Features
 - Plantext configuration: Editing configuration files *outside* of an interface makes it more portable and easier to work with.
