@@ -29,6 +29,7 @@ private:
     int iconDistance;
     int iconOffset;
     QList<QDomElement> items;
+    bool leftClicking;
     bool lock;
     int menuOffset;
     int pageCount;
@@ -42,6 +43,7 @@ private:
     void closeEvent(QCloseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
     void paintEvent(QPaintEvent *event);
 };
 #endif // APPLICATIONLAUNCHER_H

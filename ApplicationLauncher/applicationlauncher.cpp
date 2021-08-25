@@ -1,6 +1,5 @@
 #include "applicationlauncher.h"
 
-#include <QGuiApplication>
 #include <QIcon>
 #include <QMouseEvent>
 #include <QPainter>
@@ -35,6 +34,7 @@ void ApplicationLauncher::toggle()
 {
     if (isVisible()) {
         hide();
+        leftClicking = false;
     } else {
         sliceSelected = -1;
         items.clear();
@@ -75,7 +75,7 @@ void ApplicationLauncher::navigate(int i)
     if (i == -1) {
         QDomNode n = items[0].parentNode().parentNode();
         if (n.isDocument()) {
-            hide();
+            toggle();
             return;
         } else {
             currentPage.removeLast();
@@ -87,7 +87,7 @@ void ApplicationLauncher::navigate(int i)
             currentPage.append(0);
         } else {
             QProcess::startDetached(items[i + currentPage.last() * sliceCount].attribute("exec").split(" ")[0], {});
-            hide();
+            toggle();
         }
     }
     items.clear();
@@ -104,7 +104,7 @@ void ApplicationLauncher::navigate(int i)
 void ApplicationLauncher::closeEvent(QCloseEvent *event)
 {
     event->ignore();
-    hide();
+    toggle();
 }
 
 void ApplicationLauncher::mouseMoveEvent(QMouseEvent *event)
@@ -126,7 +126,7 @@ void ApplicationLauncher::mouseMoveEvent(QMouseEvent *event)
             }
         }
         if (distance >= pow(menuSize / 2, 2)) {
-            if (!lock && sliceSelected != -1 && QGuiApplication::mouseButtons() == Qt::LeftButton) {
+            if (!lock && sliceSelected != -1 && leftClicking) {
                 navigate(sliceSelected);
             }
             lock = true;
@@ -141,13 +141,22 @@ void ApplicationLauncher::mouseMoveEvent(QMouseEvent *event)
 
 void ApplicationLauncher::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::MiddleButton) {
+    if (event->button() == Qt::LeftButton) {
+        leftClicking = true;
+    } else if (event->button() == Qt::MiddleButton) {
         navigate(-1);
     } else if (event->button() == Qt::RightButton) {
         if (++currentPage.last() >= pageCount) {
             currentPage.last() = 0;
         }
         update();
+    }
+}
+
+void ApplicationLauncher::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        leftClicking = false;
     }
 }
 
