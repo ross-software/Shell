@@ -8,20 +8,16 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt5 COMPONENTS Widgets DBus LinguistTools REQUIRED)
-find_package(Qt5X11Extras)
-find_package(X11)
 find_package(Qt5Xdg)
 
 set(PROJECT_SOURCES
     main.cpp
     applicationlauncher.cpp
     applicationlauncher.h
-    launcheritem.cpp
-    launcheritem.h
 )
 
 set(LANGUAGES de es fr)
@@ -39,6 +35,6 @@ add_executable(ApplicationLauncher
     ${QM_FILES}
 )
 
-target_link_libraries(ApplicationLauncher PRIVATE Qt5::Widgets Qt5::DBus Qt5X11Extras Qt5Xdg X11)
+target_link_libraries(ApplicationLauncher PRIVATE Qt5::Widgets Qt5::DBus Qt5Xdg)
 
 install(TARGETS ApplicationLauncher RUNTIME DESTINATION bin)

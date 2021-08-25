@@ -1,11 +1,9 @@
 #ifndef APPLICATIONLAUNCHER_H
 #define APPLICATIONLAUNCHER_H
 
-#include "launcheritem.h"
-
-#include <QGridLayout>
 #include <QSettings>
-#include <qt5xdg/XdgMenu>
+#include <QWidget>
+#include <XdgMenu>
 
 class ApplicationLauncher : public QWidget
 {
@@ -14,30 +12,36 @@ class ApplicationLauncher : public QWidget
 
 public:
     ApplicationLauncher(QWidget *parent = nullptr);
+    ~ApplicationLauncher();
 
 public slots:
     Q_SCRIPTABLE void toggle();
 
 private:
-    int currentPage = 0;
-    QLabel *escapeLabel;
-    QGridLayout *gridLayout;
-    QHash<QString, QVarLengthArray<LauncherItem *>> launcherItems;
-    int maxColumns;
-    int maxRows;
-    XdgMenu menu;
-    QLabel *nextPageLabel;
-    QStringList path = {"Applications"};
+    int centerCircleSize = 300;
+    int iconSize = 64;
+    int menuSize = 600;
+    int sliceCount = 8;
     QSettings settings;
-    QVBoxLayout *verticalLayout;
 
-    void clearGridLayout();
-    void initializeMenu();
-    void loadLauncherItems(const QString &tagName);
-    void showApplications();
+    int centerCirclePosition;
+    QList<int> currentPage;
+    int iconDistance;
+    int iconOffset;
+    QList<QDomElement> items;
+    bool lock;
+    int menuOffset;
+    int pageCount;
+    float sliceLength;
+    int sliceSelected;
+    XdgMenu menu;
+
+    void initializeSettings();
+    void navigate(int i);
 
     void closeEvent(QCloseEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-
+    void mouseMoveEvent(QMouseEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event);
 };
 #endif // APPLICATIONLAUNCHER_H

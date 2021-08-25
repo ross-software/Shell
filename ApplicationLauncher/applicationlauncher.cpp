@@ -1,119 +1,103 @@
 #include "applicationlauncher.h"
 
 #include <QIcon>
-#include <QKeyEvent>
-#include <QKeySequence>
-#include <QtX11Extras/QX11Info>
-#include <X11/XKBlib.h>
-#include <cmath>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QProcess>
+#include <QScreen>
+#include <QtMath>
 
 ApplicationLauncher::ApplicationLauncher(QWidget *parent)
     : QWidget(parent)
-    , escapeLabel(new QLabel(tr("[Esc] Back/Close")))
-    , gridLayout(new QGridLayout)
-    , nextPageLabel(new QLabel(tr("[Tab] Switch Page")))
-    , settings(new QSettings)
-    , verticalLayout(new QVBoxLayout(this))
 {
+    setAttribute(Qt::WA_TranslucentBackground);
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    setWindowModality(Qt::ApplicationModal);
-    verticalLayout->addWidget(escapeLabel);
-    verticalLayout->addLayout(gridLayout);
-    gridLayout->setAlignment(Qt::AlignLeft);
-    verticalLayout->addStretch();
-    verticalLayout->addWidget(nextPageLabel);
-    nextPageLabel->setAlignment(Qt::AlignHCenter);
+    setMouseTracking(true);
+    initializeSettings();
+    centerCirclePosition = -centerCircleSize / 2;
+    iconOffset = iconSize / 2;
+    menuOffset = menuSize / 2;
+    iconDistance = centerCircleSize / 2 + (menuSize - centerCircleSize) / 4;
+    sliceLength = 2 * M_PI / sliceCount;
+    menu.setEnvironments(QStringList() << qgetenv("XDG_CURRENT_DESKTOP"));
+    QString menuFile = XdgMenu::getMenuFileName();
+    if (!menu.read(menuFile)) {
+        return;
+    }
+}
+
+ApplicationLauncher::~ApplicationLauncher()
+{
 }
 
 void ApplicationLauncher::toggle()
 {
-    if (!isVisible()) {
-        while (path.size() > 1) {
-            path.removeLast();
-        }
-        currentPage = 0;
-        initializeMenu();
-        showApplications();
-        show();
-    } else {
+    if (isVisible()) {
         hide();
+    } else {
+        sliceSelected = -1;
+        items.clear();
+        currentPage.clear();
+        items << menu.xml().documentElement();
+        currentPage.append(0);
+        navigate(0);
+        showFullScreen();
+        QCursor::setPos(screen()->size().width() / 2, screen()->size().height() / 2);
     }
 }
 
-void ApplicationLauncher::clearGridLayout()
+void ApplicationLauncher::initializeSettings()
 {
-    while (QLayoutItem *item = gridLayout->takeAt(0)) {
-        item->widget()->setParent(nullptr);
-        delete item;
+    if (settings.allKeys().isEmpty()) {
+        settings.beginGroup("settings");
+        settings.setValue("sliceCount", sliceCount);
+        settings.endGroup();
+        settings.beginGroup("size");
+        settings.setValue("centerCircle", centerCircleSize);
+        settings.setValue("icons", iconSize);
+        settings.setValue("menu", menuSize);
+        settings.endGroup();
     }
-}
-
-void ApplicationLauncher::initializeMenu()
-{
-    settings.sync();
-    settings.beginGroup("Layout");
-    maxColumns = settings.value("MaxColumns", 4).toInt();
-    maxRows = settings.value("MaxRows", 2).toInt();
+    settings.beginGroup("settings");
+    sliceCount = settings.value("sliceCount", centerCircleSize).toInt();
     settings.endGroup();
-    menu.setEnvironments(QStringList() << qgetenv("XDG_CURRENT_DESKTOP"));
-    if (!menu.read(XdgMenu::getMenuFileName())) {
-        return;
-    }
-    launcherItems.clear();
-    loadLauncherItems("Menu");
-    loadLauncherItems("AppLink");
-    QHashIterator<QString, QVarLengthArray<LauncherItem *>> it(launcherItems);
-    while (it.hasNext()) {
-        it.next();
-        std::sort(launcherItems[it.key()].begin(), launcherItems[it.key()].end(), [](LauncherItem *a, LauncherItem *b) {
-            return a->getTitle() < b->getTitle();
-        });
-    }
+    settings.beginGroup("size");
+    centerCircleSize = settings.value("centerCircle", centerCircleSize).toInt();
+    iconSize = settings.value("icons", iconSize).toInt();
+    menuSize = settings.value("menu", menuSize).toInt();
+    settings.endGroup();
 }
 
-void ApplicationLauncher::loadLauncherItems(const QString &tagName) {
-    QDomNodeList nodes = menu.xml().elementsByTagName(tagName);
-    for (int i = 0; i < nodes.size(); i++) {
-        QDomNode node = nodes.at(i);
-        if (node.parentNode().isElement()) {
-            LauncherItem *launcherItem = new LauncherItem;
-            launcherItem->setIcon(QIcon::fromTheme(node.toElement().attribute("icon")).pixmap(32));
-            launcherItem->setTitle(node.toElement().attribute("title"));
-            if (tagName == "Menu") {
-                launcherItem->isCategory = true;
-                launcherItem->setExec({ node.toElement().attribute("name") });
-            } else if (tagName == "AppLink") {
-                launcherItem->setExec(node.toElement().attribute("exec").remove("\"").remove(QRegExp(" %.")).split(" "));
-            }
-            launcherItems[node.parentNode().toElement().attribute("name")] << launcherItem;
-        }
-    }
-}
-
-void ApplicationLauncher::showApplications()
+void ApplicationLauncher::navigate(int i)
 {
-    clearGridLayout();
-    int maxPages = std::ceil(launcherItems[path.last()].size() / (double)(maxRows * maxColumns));
-    if (currentPage >= maxPages) {
-        currentPage = 0;
-    } else if (currentPage < 0) {
-        currentPage = maxPages - 1;
-    }
-    nextPageLabel->setVisible(maxPages > 1);
-    for (int row = 0; row < maxRows; row++) {
-        for (int column = 0; column < maxColumns; column++) {
-            int i = currentPage * maxRows * maxColumns + row * maxColumns + column;
-            if (i < launcherItems[path.last()].size()) {
-                if (QX11Info::isPlatformX11()) {
-                    QString keyPrefix = "[" + QKeySequence(XkbKeycodeToKeysym(QX11Info::display(), 24 + 14 * row + column, 0, 0)).toString() + "] ";
-                    if (!launcherItems[path.last()].at(i)->getTitle().startsWith(keyPrefix)) {
-                        launcherItems[path.last()].at(i)->setTitle(keyPrefix + launcherItems[path.last()].at(i)->getTitle());
-                    }
-                }
-                gridLayout->addWidget(launcherItems[path.last()].at(i), row, column);
-            }
+    QDomElement e;
+    if (i == -1) {
+        QDomNode n = items[0].parentNode().parentNode();
+        if (n.isDocument()) {
+            hide();
+            return;
+        } else {
+            currentPage.removeLast();
+            e = n.firstChildElement();
+        }
+    } else {
+        if(items[i + currentPage.last() * sliceCount].attribute("exec").isNull()) {
+            e = items[i + currentPage.last() * sliceCount].firstChildElement();
+            currentPage.append(0);
+        } else {
+            QProcess::startDetached(items[i + currentPage.last() * sliceCount].attribute("exec").split(" ")[0], {});
+            hide();
         }
     }
+    items.clear();
+    while (!e.isNull()) {
+        if (e.tagName() == "Menu" || e.tagName() == "AppLink") {
+            items << e;
+        }
+        e = e.nextSiblingElement();
+    }
+    pageCount = (items.count() - 1) / sliceCount + 1;
+    update();
 }
 
 void ApplicationLauncher::closeEvent(QCloseEvent *event)
@@ -122,41 +106,76 @@ void ApplicationLauncher::closeEvent(QCloseEvent *event)
     hide();
 }
 
-void ApplicationLauncher::keyPressEvent(QKeyEvent *event)
+void ApplicationLauncher::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->isAutoRepeat()) {
-        return;
-    }
-    int nativeKey = event->nativeScanCode();
-    for (int row = 0; row < maxRows; row++) {
-        int i = 24 + row * 14;
-        if (nativeKey >= i && nativeKey < i + maxColumns) {
-            i = nativeKey - i + row * maxColumns;
-            if (i < gridLayout->count()) {
-                LauncherItem *launcherItem = qobject_cast<LauncherItem *>(gridLayout->itemAt(i)->widget());
-                if (launcherItem->isCategory) {
-                    path << launcherItem->getExec().at(0);
-                    showApplications();
-                } else {
-                    launcherItem->execute();
-                }
+    int menuPosX = event->x() - screen()->size().width() / 2;
+    int menuPosY = event->y() - screen()->size().height() / 2;
+    int distance = pow(menuPosX, 2) + pow(menuPosY, 2);
+    sliceSelected = -1;
+    if (distance >= pow(centerCircleSize / 2, 2)) {
+        for (int i = 0; i + currentPage.last() * sliceCount < items.count() && i < sliceCount; i++) {
+            float angle = M_PI - atan2(menuPosX, menuPosY);
+            float startangle = i * sliceLength - sliceLength / 2;
+            float endangle = startangle + sliceLength;
+            if (startangle < 0) {
+                startangle += 2 * M_PI;
+            }
+            if ((startangle <= angle && angle <= endangle) || (endangle < startangle && (startangle <= angle || angle <= endangle))) {
+                sliceSelected = i;
             }
         }
-    }
-    if (event->key() == Qt::Key_Tab) {
-        currentPage++;
-        showApplications();
-    } else if (event->key() == Qt::Key_Backtab) {
-        currentPage--;
-        showApplications();
-    }
-    if (event->key() == Qt::Key_Escape) {
-        if (path.size() > 1) {
-            path.removeLast();
-            currentPage = 0;
+        if (distance >= pow(menuSize / 2, 2)) {
+            if (!lock && sliceSelected != -1) {
+                navigate(sliceSelected);
+            }
+            lock = true;
         } else {
-            hide();
+            lock = false;
         }
-        showApplications();
+    } else {
+        lock = false;
     }
+    update();
+}
+
+void ApplicationLauncher::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::MiddleButton) {
+        navigate(-1);
+    } else {
+        if (++currentPage.last() >= pageCount) {
+            currentPage.last() = 0;
+        }
+        update();
+    }
+}
+
+void ApplicationLauncher::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.translate(rect().center());
+    for (int i = 0; i < sliceCount; i++) {
+        if (sliceSelected == i) {
+            painter.setBrush(Qt::darkGray);
+        } else {
+            painter.setBrush(Qt::SolidPattern);
+        }
+        float sliceLengthDegrees = qRadiansToDegrees(sliceLength);
+        painter.drawPie(-menuOffset, -menuOffset, menuSize, menuSize, (90 - i * sliceLengthDegrees + qRadiansToDegrees(sliceLength) / 2) * 16, -sliceLengthDegrees * 16);
+    }
+    for (int i = 0; i + currentPage.last() * sliceCount < items.count() && i < sliceCount; i++) {
+        QPixmap icon = QIcon::fromTheme(items[i + currentPage.last() * sliceCount].attribute("icon")).pixmap(iconSize);
+        painter.drawPixmap(iconDistance * sin(i * sliceLength) - iconOffset, iconDistance * -cos(i * sliceLength) - iconOffset, icon);
+    }
+    painter.setBrush(Qt::SolidPattern);
+    painter.drawEllipse(centerCirclePosition, centerCirclePosition, centerCircleSize, centerCircleSize);
+    QString circleText;
+    if (sliceSelected + currentPage.last() * sliceCount < items.count() && sliceSelected != -1) {
+        circleText = items[sliceSelected + currentPage.last() * sliceCount].attribute("title");
+    } else {
+        circleText = "[Left/Right Click] Next Page\n[Middle Click] Back\n(" + QString::number(currentPage.last() + 1) + "/" + QString::number(pageCount) + ")";
+    }
+    painter.setPen(Qt::white);
+    painter.drawText(centerCirclePosition, centerCirclePosition, centerCircleSize, centerCircleSize, Qt::AlignCenter, circleText);
 }
