@@ -1,7 +1,7 @@
 # ROSS Shell
 
 The main goal of this project is to create the most effcient GUI possible. You can find the various components in the following folders:
-- ApplicationLauncher: desktop independent application launcher popup, uses chords from the keyboard
+- ApplicationLauncher: desktop independent application launcher using a radial menu
 - wm-configs: session and configurations files
 
 ## Installation and Usage
