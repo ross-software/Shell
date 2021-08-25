@@ -1,5 +1,6 @@
 #include "applicationlauncher.h"
 
+#include <QGuiApplication>
 #include <QIcon>
 #include <QMouseEvent>
 #include <QPainter>
@@ -125,7 +126,7 @@ void ApplicationLauncher::mouseMoveEvent(QMouseEvent *event)
             }
         }
         if (distance >= pow(menuSize / 2, 2)) {
-            if (!lock && sliceSelected != -1) {
+            if (!lock && sliceSelected != -1 && QGuiApplication::mouseButtons() == Qt::LeftButton) {
                 navigate(sliceSelected);
             }
             lock = true;
@@ -142,7 +143,7 @@ void ApplicationLauncher::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::MiddleButton) {
         navigate(-1);
-    } else {
+    } else if (event->button() == Qt::RightButton) {
         if (++currentPage.last() >= pageCount) {
             currentPage.last() = 0;
         }
@@ -174,7 +175,7 @@ void ApplicationLauncher::paintEvent(QPaintEvent *event)
     if (sliceSelected + currentPage.last() * sliceCount < items.count() && sliceSelected != -1) {
         circleText = items[sliceSelected + currentPage.last() * sliceCount].attribute("title");
     } else {
-        circleText = "[Left/Right Click] Next Page\n[Middle Click] Back\n(" + QString::number(currentPage.last() + 1) + "/" + QString::number(pageCount) + ")";
+        circleText = "[Left Click Drag] Navigate\n[Middle Click] Back\n[Right Click] Next Page\n(" + QString::number(currentPage.last() + 1) + "/" + QString::number(pageCount) + ")";
     }
     painter.setPen(Qt::white);
     painter.drawText(centerCirclePosition, centerCirclePosition, centerCircleSize, centerCircleSize, Qt::AlignCenter, circleText);
