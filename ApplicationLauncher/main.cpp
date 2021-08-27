@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     ApplicationLauncher applicationLauncher;
     QObject::connect(&app, &QApplication::applicationStateChanged, [&applicationLauncher](Qt::ApplicationState state) {
-        if (state == Qt::ApplicationInactive) {
+        if (state == Qt::ApplicationInactive && applicationLauncher.isVisible()) {
             applicationLauncher.toggle();
         }
     });
