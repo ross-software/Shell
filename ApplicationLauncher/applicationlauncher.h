@@ -18,9 +18,9 @@ public slots:
     Q_SCRIPTABLE void toggle();
 
 private:
-    int centerCircleSize = 300;
+    int centerCircleSize = 250;
     int iconSize = 64;
-    int menuSize = 600;
+    int menuSize = 500;
     int sliceCount = 8;
     QSettings settings;
 
